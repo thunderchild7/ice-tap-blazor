@@ -1,0 +1,27 @@
+{
+  "name": "Ice Tap",
+  "short_name": "Ice Tap",
+  "description": "A 60-second ice-fishing reflex game. Tap the fish, dodge the hazards, play offline from your home screen.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#07131c",
+  "theme_color": "#07131c",
+  "categories": ["games"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

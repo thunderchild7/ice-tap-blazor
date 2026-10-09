@@ -1,0 +1,152 @@
+<div class="app">
+    <div class="sky" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="aurora" aria-hidden="true"></div>
+
+    <header class="hud">
+        <div class="hud-block">
+            <span class="label">Score</span>
+            <span id="score" class="value @(ScoreHot ? "hot" : null)">@ScoreText</span>
+        </div>
+        <div class="hud-block center">
+            <span class="label">Time</span>
+            <span id="time" class="@TimeClass">@TimeText</span>
+            <span class="strikes" hidden="@(!ShowStrikes)" aria-label="@StrikesLabel">
+                <i class="@(PipSpent(0) ? "is-spent" : null)"></i>
+                <i class="@(PipSpent(1) ? "is-spent" : null)"></i>
+                <i class="@(PipSpent(2) ? "is-spent" : null)"></i>
+            </span>
+        </div>
+        <div class="hud-block end">
+            <span class="label">Combo</span>
+            <span id="combo" class="value @(comboBreak ? "break" : null)">@ComboText</span>
+        </div>
+    </header>
+
+    <div class="stage">
+        <div @key="calloutKey" class="callout @(calloutOn ? "show" : null)" aria-hidden="true">@calloutText</div>
+        <div class="board-wrap">
+            <div class="@BoardClass">
+                @for (var i = 0; i < Rules.HoleCount; i++)
+                {
+                    var index = i;
+                    var hole = holes[index];
+                    <button type="button"
+                            class="@hole.ClassName"
+                            aria-label="@hole.Aria"
+                            @onpointerdown="e => OnPointer(index, e)"
+                            @onpointerdown:preventDefault="game.State.Phase == Phase.Playing"
+                            @oncontextmenu:preventDefault="true">
+                        <span class="rim"></span>
+                        <span class="water"><span class="ripples"></span></span>
+                        <span class="critter">@hole.Sprite</span>
+                        <span @key="hole.FloatKey" class="@hole.FloaterClass">@hole.FloaterText</span>
+                        @foreach (var drop in hole.Drops)
+                        {
+                            <span @key="drop.Key" class="drop @drop.Kind" style="@drop.Style"></span>
+                        }
+                    </button>
+                }
+            </div>
+        </div>
+
+        <section class="overlay" hidden="@(!showTitle)">
+            <div class="card">
+                <div class="mark" aria-hidden="true">
+                    <svg viewBox="0 0 64 64">
+                        <circle cx="32" cy="40" r="15" fill="#0c3348" stroke="#e8f7ff" stroke-width="3" />
+                        <ellipse cx="29" cy="24" rx="12" ry="7" fill="#e7f8ff" />
+                        <path d="M39 24l12-7-2 7 2 6z" fill="#8ecfec" />
+                        <circle cx="22" cy="23" r="1.7" fill="#102430" />
+                    </svg>
+                </div>
+                <p class="eyebrow">60-second cast</p>
+                <h1>Ice Tap</h1>
+                <p class="lede">Tap fish as they break the surface. Leave boots, seals, and cracking ice alone.</p>
+                <p class="sub">Five in a row doubles the points. The chain climbs to ×5.</p>
+                <p class="record" hidden="@(!showTitleRecord)">@titleRecord</p>
+                <button @ref="playButton" class="play" type="button" @onclick="PlayTimed">Play</button>
+                <button class="play secondary" type="button" hidden="@(!showEndless)" @onclick="PlayEndless">Endless</button>
+                <p class="mode-note" hidden="@(!showEndless)">Three snags end the run.</p>
+                <div class="extra">
+                    <button class="text-btn" type="button" hidden="@(!installReady)" @onclick="Install">Install</button>
+                    <p class="hint" hidden="@(!showIosHint)">
+                        From the Share menu, choose Add to Home Screen.
+                        <button class="text-btn" type="button" @onclick="DismissHint">Dismiss</button>
+                    </p>
+                </div>
+                <p class="keys">Keys 1–9</p>
+            </div>
+        </section>
+
+        <section class="overlay" hidden="@(!showResults)">
+            <div class="card">
+                <p class="eyebrow">Score</p>
+                <h2 id="final-score">@finalScoreText</h2>
+                <p class="pill" hidden="@(!showBest)">New best</p>
+                <p class="record">@recordLine</p>
+                <ul class="tally">
+                    @foreach (var fish in Rules.FishIds)
+                    {
+                        var species = Rules.ToSpecies(fish);
+                        var count = Caught(fish);
+                        <li data-species="@Rules.Slug(species)" class="@(count == 0 ? "is-zero" : null)">
+                            @Critters.Sprite(species)
+                            <span class="n">@count</span>
+                            <span class="k">@Rules.Info(species).Name</span>
+                        </li>
+                    }
+                </ul>
+                <p class="sub">@roundLine</p>
+                <button @ref="againButton" class="play" type="button" @onclick="PlayAgain">Play again</button>
+                <button class="play secondary" type="button" @onclick="PlayOther">@otherModeText</button>
+                <p class="mode-note" hidden="@otherNoteHidden">Three snags end the run.</p>
+            </div>
+        </section>
+
+        <div class="overlay" hidden="@(!showPause)" @onclick="ResumeRound">
+            <div class="card pause-card" @onclick="Swallow" @onclick:stopPropagation="true">
+                <h2>Paused</h2>
+                <p class="lede">@pauseText</p>
+                <button class="play" type="button" @onclick="ResumeRound">Resume</button>
+                <button class="text-btn" type="button" hidden="@(!showEndRun)" @onclick="EndRun">End run</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="dock">
+        <ul class="score-legend" aria-label="Scoring">
+            @foreach (var fish in Rules.FishIds)
+            {
+                var species = Rules.ToSpecies(fish);
+                var info = Rules.Info(species);
+                var points = Format(info.Points);
+                <li data-species="@Rules.Slug(species)" aria-label="@($"{info.Name}, {points} points")">
+                    @Critters.Sprite(species)
+                    <span class="pts">@points</span>
+                    <span class="name">@info.Name</span>
+                </li>
+            }
+            <li class="is-hazard" aria-label="@($"Hazard, minus {Rules.HazardPenalty} points")">
+                @Critters.Sprite(SpeciesId.Boot)
+                <span class="pts">@($"\u2212{Rules.HazardPenalty}")</span>
+                <span class="name">Hazard</span>
+            </li>
+            <li class="is-dodge" aria-label="@($"Dodge, plus {Rules.DodgeBonus} points")">
+                <span class="dodge-mark" aria-hidden="true"></span>
+                <span class="pts">@($"+{Rules.DodgeBonus}")</span>
+                <span class="name">Dodge</span>
+            </li>
+        </ul>
+        <div class="dock-row">
+            <p class="dock-best">@dockText</p>
+            <div class="toggles">
+                <button class="toggle" type="button" aria-pressed="@save.Sound.ToString().ToLowerInvariant()" aria-label="@SoundLabel" @onclick="ToggleSound">Sound</button>
+                <button class="toggle" type="button" aria-pressed="@save.Haptics.ToString().ToLowerInvariant()" aria-label="@HapticsLabel" @onclick="ToggleHaptics">Haptics</button>
+            </div>
+        </div>
+    </footer>
+
+    <p class="sr-only" aria-live="polite">@live</p>
+</div>

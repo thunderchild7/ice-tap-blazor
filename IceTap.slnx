@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/IceTap.Core/IceTap.Core.csproj" />
+  </Folder>
+  <Folder Name="/src/IceTap.Wasm/">
+    <Project Path="src/IceTap.Wasm/IceTap.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/IceTap.Core.Tests/IceTap.Core.Tests.csproj" />
+  </Folder>
+</Solution>
