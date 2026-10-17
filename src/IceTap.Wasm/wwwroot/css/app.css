@@ -399,8 +399,6 @@ button,
 
 .hole.is-pike .sprite { width: 104%; height: 62%; }
 .hole.is-boot .sprite { width: 74%; height: 80%; }
-.hole.is-seal .sprite { width: 80%; height: 80%; }
-.hole.is-crack .sprite { width: 78%; height: 78%; }
 
 .hole.is-ripple .critter { animation: rise 0.16s ease-out both; }
 .hole.is-up .critter { animation: breach 0.14s cubic-bezier(0.2, 1.35, 0.36, 1) both; }

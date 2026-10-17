@@ -47,7 +47,8 @@ public class LogicTests
         Assert.DoesNotContain(SpeciesId.Char, early);
         var late = Rules.SpeciesTable(3).Select(entry => entry.Id).ToArray();
         Assert.Contains(SpeciesId.Pike, late);
-        Assert.Contains(SpeciesId.Crack, late);
+        Assert.Contains(SpeciesId.Boot, late);
+        Assert.All(late, id => Assert.True(id == SpeciesId.Boot || Rules.IsFish(id)));
 
         var open = Rules.VisibleWindow(SpeciesId.Perch, 0);
         var close = Rules.VisibleWindow(SpeciesId.Perch, Rules.RoundMs);
@@ -61,7 +62,7 @@ public class LogicTests
         var rng = Rules.Mulberry32(4);
         for (var i = 0; i < 12; i++) Assert.Equal(SpeciesId.Perch, Rules.ChooseSpecies(1_000, rng, 0));
         Assert.Equal(SpeciesId.Boot, Rules.ChooseSpecies(10_000, () => 0.999, 0));
-        Assert.Equal(SpeciesId.Crack, Rules.ChooseSpecies(50_000, () => 0.999, 0));
+        Assert.Equal(SpeciesId.Boot, Rules.ChooseSpecies(50_000, () => 0.999, 0));
         for (var i = 0; i < 30; i++)
         {
             var species = Rules.ChooseSpecies(50_000, rng, 2);
@@ -122,7 +123,7 @@ public class LogicTests
         Assert.IsType<TapResult.Whiff>(game.Tap(1, 160));
 
         game.State.Score = 40;
-        Rules.Arm(game.State, 2, SpeciesId.Crack, 0);
+        Rules.Arm(game.State, 2, SpeciesId.Boot, 0);
         var tiny = Assert.IsType<TapResult.Hazard>(game.Tap(2, 180));
         Assert.Equal(40, tiny.Penalty);
         Assert.Equal(0, game.State.Score);
@@ -136,7 +137,7 @@ public class LogicTests
         game.State.NextSpawnAt = 1_000_000;
         game.State.Combo = 4;
         game.State.Score = 500;
-        var actor = Rules.Arm(game.State, 3, SpeciesId.Seal, 0);
+        var actor = Rules.Arm(game.State, 3, SpeciesId.Boot, 0);
         for (var t = 50; t <= actor.HideAt + 100; t += 50) game.Tick(t);
         Assert.Equal(1, game.State.Dodged);
         Assert.Equal(550, game.State.Score);
@@ -238,7 +239,7 @@ public class LogicTests
         Assert.Equal(70_000, game.State.ElapsedMs);
         Assert.Equal(0, game.State.Strikes);
 
-        var dodge = Rules.Arm(game.State, 4, SpeciesId.Seal, 70_000);
+        var dodge = Rules.Arm(game.State, 4, SpeciesId.Boot, 70_000);
         for (var t = 70_100d; t <= dodge.HideAt + 50; t += 50) game.Tick(t);
         Assert.Equal(0, game.State.Strikes);
         Assert.Equal(Phase.Playing, game.State.Phase);
@@ -252,7 +253,7 @@ public class LogicTests
         }
 
         var lastAt = game.State.ElapsedMs;
-        Rules.Arm(game.State, 2, SpeciesId.Crack, lastAt);
+        Rules.Arm(game.State, 2, SpeciesId.Boot, lastAt);
         Assert.IsType<TapResult.Hazard>(game.Tap(2, lastAt));
         Assert.Equal(3, game.State.Strikes);
         Assert.Equal(Phase.Over, game.State.Phase);
@@ -318,11 +319,11 @@ public class LogicTests
         Assert.True(calmTotal > 12_000);
         Assert.True(calmTotal < 5_000_000);
         Assert.NotNull(seed7);
-        Assert.Equal(38_650, seed7.Score);
-        Assert.Equal(17, seed7.Catches.Perch);
-        Assert.Equal(10, seed7.Catches.Trout);
-        Assert.Equal(5, seed7.Catches.Char);
-        Assert.Equal(2, seed7.Catches.Pike);
+        Assert.Equal(79_650, seed7.Score);
+        Assert.Equal(18, seed7.Catches.Perch);
+        Assert.Equal(13, seed7.Catches.Trout);
+        Assert.Equal(6, seed7.Catches.Char);
+        Assert.Equal(9, seed7.Catches.Pike);
         var replay = Play(7, Style.Calm);
         Assert.Equal(seed7.Score, replay.Score);
         Assert.Equal(seed7.Catches, replay.Catches);
