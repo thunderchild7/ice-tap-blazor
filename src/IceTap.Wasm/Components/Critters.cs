@@ -63,21 +63,5 @@ static class Critters
               <path d="M26 58h34" stroke="#e2c2a4" stroke-width="2" stroke-linecap="round"/>
             </svg>
             """,
-        [SpeciesId.Seal] = """
-            <svg class="sprite" viewBox="0 0 80 84" aria-hidden="true">
-              <ellipse cx="40" cy="62" rx="24" ry="13" fill="#8aa0ae" stroke="#10242c" stroke-width="2"/>
-              <circle cx="40" cy="36" r="18" fill="#d5e2ea" stroke="#10242c" stroke-width="2"/>
-              <circle cx="33" cy="34" r="2.4" fill="#10242c"/>
-              <circle cx="47" cy="34" r="2.4" fill="#10242c"/>
-              <ellipse cx="40" cy="41" rx="3.2" ry="2.2" fill="#24343e"/>
-              <path d="M16 38h8M56 38h8M14 44h8M58 44h8" stroke="#10242c" stroke-width="1.6" stroke-linecap="round"/>
-            </svg>
-            """,
-        [SpeciesId.Crack] = """
-            <svg class="sprite" viewBox="0 0 80 80" aria-hidden="true">
-              <path d="M40 8l8 18 18 4-14 12 4 18-16-10-16 10 4-18L14 30l18-4z" fill="#e7f7ff" stroke="#6e8fa3" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M40 24v26M40 38l12 8M40 38L30 48" stroke="#5f98b8" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            """,
     };
 }

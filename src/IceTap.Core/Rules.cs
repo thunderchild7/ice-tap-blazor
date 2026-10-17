@@ -15,8 +15,6 @@ public enum SpeciesId
     Char,
     Pike,
     Boot,
-    Seal,
-    Crack,
 }
 
 public enum SpeciesKind
@@ -107,11 +105,9 @@ public static class Rules
         (980, 620),
         (880, 540),
         (1160, 800),
-        (1100, 740),
-        (1040, 700),
     ];
 
-    static readonly double[] RippleRatio = [0.28, 0.3, 0.4, 0.42, 0.38, 0.38, 0.4];
+    static readonly double[] RippleRatio = [0.28, 0.3, 0.4, 0.42, 0.38];
 
     static readonly WeightedSpecies[][] Tables =
     [
@@ -125,7 +121,6 @@ public static class Rules
             new(SpeciesId.Trout, 26),
             new(SpeciesId.Char, 12),
             new(SpeciesId.Boot, 14),
-            new(SpeciesId.Seal, 10),
         ],
         [
             new(SpeciesId.Perch, 22),
@@ -133,8 +128,6 @@ public static class Rules
             new(SpeciesId.Char, 16),
             new(SpeciesId.Pike, 8),
             new(SpeciesId.Boot, 12),
-            new(SpeciesId.Seal, 12),
-            new(SpeciesId.Crack, 10),
         ],
         [
             new(SpeciesId.Perch, 12),
@@ -142,8 +135,6 @@ public static class Rules
             new(SpeciesId.Char, 18),
             new(SpeciesId.Pike, 16),
             new(SpeciesId.Boot, 13),
-            new(SpeciesId.Seal, 13),
-            new(SpeciesId.Crack, 12),
         ],
     ];
 
@@ -154,8 +145,6 @@ public static class Rules
         SpeciesId.Char => new(SpeciesKind.Fish, "Char", 500),
         SpeciesId.Pike => new(SpeciesKind.Fish, "Pike", 1000),
         SpeciesId.Boot => new(SpeciesKind.Hazard, "Boot", 0),
-        SpeciesId.Seal => new(SpeciesKind.Hazard, "Seal", 0),
-        SpeciesId.Crack => new(SpeciesKind.Hazard, "Crack", 0),
         _ => throw new ArgumentOutOfRangeException(nameof(id)),
     };
 
@@ -186,8 +175,6 @@ public static class Rules
         SpeciesId.Char => "char",
         SpeciesId.Pike => "pike",
         SpeciesId.Boot => "boot",
-        SpeciesId.Seal => "seal",
-        SpeciesId.Crack => "crack",
         _ => throw new ArgumentOutOfRangeException(nameof(id)),
     };
 
